@@ -1,8 +1,32 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "src",
+  "sourceRoot": "apps/viser-pet-api/src",
   "compilerOptions": {
-    "deleteOutDir": true
+    "deleteOutDir": true,
+    "webpack": true,
+    "tsConfigPath": "apps/viser-pet-api/tsconfig.app.json"
+  },
+  "monorepo": true,
+  "root": "apps/viser-pet-api",
+  "projects": {
+    "viser-pet": {
+      "type": "application",
+      "root": "apps/viser-pet-api",
+      "entryFile": "main",
+      "sourceRoot": "apps/viser-pet-api/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/viser-pet-api/tsconfig.app.json"
+      }
+    },
+    "viser-pet-batch": {
+      "type": "application",
+      "root": "apps/viser-pet-batch",
+      "entryFile": "main",
+      "sourceRoot": "apps/viser-pet-batch/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/viser-pet-batch/tsconfig.app.json"
+      }
+    }
   }
 }
