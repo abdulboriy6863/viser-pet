@@ -3,6 +3,6 @@ import { ViserpetBatchModule } from './viserpet-batch.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(ViserpetBatchModule);
-  await app.listen(process.env.port ?? 3000);
+  await app.listen(process.env.PORT_BATCH ?? 3000);
 }
 bootstrap();
