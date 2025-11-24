@@ -1,4 +1,4 @@
-import { registerEnumType } from '@nestjs/graphql';
+import { registerEnumType } from '@nestjs/graphql'; //graphql da ishlatish uchun
 
 export enum MemberType {
 	USER = 'USER',

@@ -101,6 +101,6 @@ const ProductSchema = new Schema(
 	{ timestamps: true, collection: 'products' },
 );
 
-ProductSchema.index({ productCollection: 1, productName: 1, productPrice: 1 }, { unique: true });
+ProductSchema.index({ productCollection: 1, productName: 1, productPrice: 1, productVolume: 1 }, { unique: true });
 
 export default ProductSchema;
