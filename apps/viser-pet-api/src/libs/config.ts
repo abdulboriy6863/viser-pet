@@ -1,4 +1,5 @@
 import { ObjectId } from 'bson';
+import { T } from './types/common';
 
 export const availableAgentSorts = ['createdAt', 'updatedAt', 'memberLikes', 'memberViews', 'memberRank'];
 export const availableMemberSorts = ['createdAt', 'updatedAt', 'memberLikes', 'memberViews'];
@@ -23,4 +24,60 @@ export const availableCommentSorts = ['createdAt', 'updatedAt'];
 
 export const shapeIntoMongoObjectId = (target: any) => {
 	return typeof target === 'string' ? new ObjectId(target) : target;
+};
+
+//auth bolgan member.      //propniId            //hosil bolgan property id ni qabul qilish
+export const lookupAuthMemberLiked = (memberId: T, targetRefId: string = '$_id') => {
+	//idRefId mavjud bolmasa shu qiymatni oladi
+	return {
+		$lookup: {
+			//localvariable
+			from: 'likes', //likees collectionda izledi
+			let: {
+				//likes ni ichiga kirib shuni ichidan qidirishini aytyappiz (search)
+				localLikeRefId: targetRefId, //"$_id" bu shunde degani
+				localMemberId: memberId,
+				localMyFavorite: true,
+			},
+			//pipeline
+			pipeline: [
+				{
+					$match: {
+						$expr: {
+							//aynan nimalarni solishtirishimizni belgilaypamiz
+							$and: [{ $eq: ['$likeRefId', '$$localLikeRefId'] }, { $eq: ['$memberId', '$$localMemberId'] }], //ikkalasin teng holatini izla
+							//memberId ni localLikeRefId ga teng bolgan holatin izla
+						},
+					},
+				},
+				{
+					$project: {
+						_id: 0,
+						memberId: 1,
+						likeRefId: 1,
+						myFavorite: '$$localMyFavorite',
+					},
+				},
+			],
+			as: 'meLiked',
+		},
+	};
+};
+
+export const lookupFavorite = {
+	$lookup: {
+		from: 'members',
+		localField: 'favoriteProperty.memberId',
+		foreignField: '_id',
+		as: 'favoriteProperty.memberData',
+	},
+};
+
+export const lookupVisit = {
+	$lookup: {
+		from: 'members',
+		localField: 'visitedProperty.memberId',
+		foreignField: '_id',
+		as: 'visitedProperty.memberData',
+	},
 };
