@@ -7,7 +7,7 @@ import { FollowModule } from './follow/follow.module';
 import { OrderModule } from './order/order.module';
 import { CommentModule } from './comment/comment.module';
 import { ViewModule } from './view/view.module';
-import { BlogModule } from './blog/blog.module';
+import { BlogPostModule } from './blog-post/blog-post.module';
 
 @Module({
 	imports: [
@@ -19,7 +19,8 @@ import { BlogModule } from './blog/blog.module';
 		OrderModule,
 		CommentModule,
 		ViewModule,
-		BlogModule,
+		BlogPostModule,
 	],
+	providers: [],
 })
 export class ComponentsModule {}

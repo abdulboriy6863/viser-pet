@@ -9,7 +9,7 @@ const ProductSchema = new Schema(
 			required: true,
 		},
 
-		propertyStatus: {
+		productStatus: {
 			type: String,
 			enum: ProductStatus,
 			default: ProductStatus.ACTIVE,
@@ -32,7 +32,7 @@ const ProductSchema = new Schema(
 
 		productDiscount: {
 			type: Number,
-			required: true,
+			default: 0,
 		},
 
 		productLeftCount: {
@@ -42,7 +42,7 @@ const ProductSchema = new Schema(
 
 		productSoldCount: {
 			type: Number,
-			required: true,
+			default: 0,
 		},
 
 		productViews: {

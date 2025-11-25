@@ -10,7 +10,7 @@ const orderSchema = new Schema(
 
 		orderDelivery: {
 			type: Number,
-			required: true,
+			default: 0,
 		},
 
 		orderStatus: {
