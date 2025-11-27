@@ -96,4 +96,15 @@ export class ProductResolver {
 		console.log('Query: getAgentProducts');
 		return await this.productService.getAgentProducts(memberId, input);
 	}
+
+	@UseGuards(AuthGuard)
+	@Mutation(() => Product)
+	public async likeTargetProduct(
+		@Args('productId') input: string,
+		@AuthMember('_id') memberId: ObjectId,
+	): Promise<Product> {
+		console.log('Mutation: likeTargetProduct');
+		const likeRefId = shapeIntoMongoObjectId(input);
+		return await this.productService.likeTargetProduct(memberId, likeRefId);
+	}
 }

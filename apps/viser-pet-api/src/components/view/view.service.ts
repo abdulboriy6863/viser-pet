@@ -40,17 +40,17 @@ export class ViewService {
 						from: 'properties',
 						localField: 'viewRefId',
 						foreignField: '_id',
-						as: 'visitedProperty',
+						as: 'visitedProduct',
 					},
 				},
-				{ $unwind: '$visitedProperty' },
+				{ $unwind: '$visitedProduct' },
 				{
 					$facet: {
 						list: [
 							{ $skip: (page - 1) * limit },
 							{ $limit: limit },
 							lookupVisit,
-							{ $unwind: '$visitedProperty.memberData' },
+							{ $unwind: '$visitedProduct.memberData' },
 						],
 						metaCounter: [{ $count: 'total' }],
 					},
@@ -58,7 +58,7 @@ export class ViewService {
 			])
 			.exec();
 		const result: Products = { list: [], metaCounter: data[0].metaCounter };
-		result.list = data[0].list.map((ele) => ele.visitedProperty);
+		result.list = data[0].list.map((ele) => ele.visitedProduct);
 		return result;
 	}
 }
