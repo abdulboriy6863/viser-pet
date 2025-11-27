@@ -1,19 +1,16 @@
 import { Field, InputType, Int } from '@nestjs/graphql';
 import { IsIn, IsInt, IsNotEmpty, IsOptional, Length, Min } from 'class-validator';
-import { ProductStatus, ProductCollection, ProductVolumeEnum } from '../../enums/product.enum';
+import { ProductStatus, ProductCollection, ProductVolume } from '../../enums/product.enum';
 import { ObjectId } from 'mongoose';
 import { availableAgentSorts, availableProductSorts } from '../../config';
 import { Direction } from '../../enums/common.enum';
+import { Optional } from '@nestjs/common';
 
 @InputType()
 export class ProductInput {
 	@IsNotEmpty()
 	@Field(() => ProductCollection)
 	productCollection: ProductCollection;
-
-	@IsNotEmpty()
-	@Field(() => ProductStatus)
-	productStatus: ProductStatus;
 
 	@IsNotEmpty()
 	@Length(3, 100)
@@ -38,6 +35,14 @@ export class ProductInput {
 	@Min(0)
 	@Field(() => Int)
 	productLeftCount: number;
+
+	@IsNotEmpty()
+	@Field(() => ProductVolume)
+	productVolume: ProductVolume;
+
+	@IsOptional()
+	@Field(() => Int, { nullable: true })
+	productSoldCount?: number;
 
 	@IsNotEmpty()
 	@Field(() => [String])

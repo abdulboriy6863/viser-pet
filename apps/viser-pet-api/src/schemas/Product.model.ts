@@ -1,5 +1,5 @@
 import { Schema } from 'mongoose';
-import { ProductCollection, ProductStatus, ProductVolumeEnum } from '../libs/enums/product.enum';
+import { ProductCollection, ProductStatus, ProductVolume } from '../libs/enums/product.enum';
 
 const ProductSchema = new Schema(
 	{
@@ -40,6 +40,12 @@ const ProductSchema = new Schema(
 			required: true,
 		},
 
+		productVolume: {
+			type: String,
+			enum: ProductVolume,
+			default: ProductVolume.MEDIUM,
+		},
+
 		productSoldCount: {
 			type: Number,
 			default: 0,
@@ -53,12 +59,6 @@ const ProductSchema = new Schema(
 		productLikes: {
 			type: Number,
 			default: 0,
-		},
-
-		productVolume: {
-			value: Number,
-			unit: String,
-			sizeCategory: ProductVolumeEnum,
 		},
 
 		productComments: {
@@ -93,14 +93,10 @@ const ProductSchema = new Schema(
 		deletedAt: {
 			type: Date,
 		},
-
-		constructedAt: {
-			type: Date,
-		},
 	},
 	{ timestamps: true, collection: 'products' },
 );
 
-ProductSchema.index({ productCollection: 1, productName: 1, productPrice: 1, productVolume: 1 }, { unique: true });
+ProductSchema.index({ productCollection: 1, productName: 1, ProductVolumeEnum: 1, productVolume: 1 }, { unique: true });
 
 export default ProductSchema;

@@ -21,11 +21,11 @@ registerEnumType(ProductStatus, {
 	name: 'ProductStatus',
 });
 
-export enum ProductVolumeEnum {
+export enum ProductVolume {
 	SMALL = 'SMALL',
 	MEDIUM = 'MEDIUM',
 	LARGE = 'LARGE',
 }
-registerEnumType(ProductVolumeEnum, {
-	name: 'ProductVolumeEnum',
+registerEnumType(ProductVolume, {
+	name: 'ProductVolume',
 });
