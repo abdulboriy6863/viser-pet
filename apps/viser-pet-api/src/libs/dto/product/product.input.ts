@@ -90,33 +90,41 @@ export class PISearch {
 	memberId?: ObjectId;
 
 	@IsOptional()
-	@Field(() => [ProductStatus], { nullable: true })
-	productStatusList?: ProductStatus[];
+	@Field(() => [ProductCollection], { nullable: true })
+	typeList?: ProductCollection[]; //tog'ri
 
 	@IsOptional()
-	@Field(() => [ProductCollection], { nullable: true })
-	typeList?: ProductCollection[];
-
-	// @IsOptional()
-	// @IsIn(availableOptions, { each: true })
-	// @Field(() => [String], { nullable: true })
-	// options?: string[];
+	@Field(() => [ProductVolume], { nullable: true })
+	productVolumeList?: ProductVolume[]; //tog'ri
 
 	@IsOptional()
 	@Field(() => PricesRange, { nullable: true })
-	pricesRange?: PricesRange;
+	pricesRange?: PricesRange; //tog'ri
 
 	@IsOptional()
 	@Field(() => PeriodsRange, { nullable: true })
-	periodsRange?: PeriodsRange;
+	periodsRange?: PeriodsRange; //tog'ri
 
 	@IsOptional()
 	@Field(() => String, { nullable: true })
-	text?: string;
+	text?: string; //tog'ri
+
+	@Field(() => Boolean, { nullable: true })
+	inStock?: boolean; //aniq emas
+
+	@Field(() => Boolean, { nullable: true })
+	discounted?: boolean; //50/50
+
+	//Bu sening enumlar asosida guruhlash (FOOD, ANIMAL...)
+	@Field(() => [String], { nullable: true })
+	mainTypeList?: string[];
+
+	@Field(() => [String], { nullable: true })
+	animalList?: string[];
 }
 
 @InputType()
-export class ProductInquiry {
+export class ProductsInquiry {
 	@IsNotEmpty()
 	@Min(1)
 	@Field(() => Int)
@@ -149,7 +157,7 @@ class APISearch {
 }
 
 @InputType()
-export class AgentPropertiesInquiry {
+export class AgentProductsInquiry {
 	@IsNotEmpty()
 	@Min(1)
 	@Field(() => Int)
