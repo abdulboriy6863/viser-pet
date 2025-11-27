@@ -8,6 +8,7 @@ import { Product, Products } from '../../libs/dto/product/product';
 import { AuthMember } from '../decorators/authMember.decorator';
 import {
 	AgentProductsInquiry,
+	AllProductsInquiry,
 	OrdinaryInquiry,
 	ProductInput,
 	ProductsInquiry,
@@ -106,5 +107,35 @@ export class ProductResolver {
 		console.log('Mutation: likeTargetProduct');
 		const likeRefId = shapeIntoMongoObjectId(input);
 		return await this.productService.likeTargetProduct(memberId, likeRefId);
+	}
+
+	/* Admin */
+
+	@Roles(MemberType.ADMIN)
+	@UseGuards(RolesGuard)
+	@Query((returns) => Products)
+	public async getAllProductsByAdmin(
+		@Args('input') input: AllProductsInquiry,
+		@AuthMember('_id') memberId: ObjectId,
+	): Promise<Products> {
+		console.log('Query getAllProductsByAdmin');
+		return await this.productService.getAllProductsByAdmin(input);
+	}
+
+	@Roles(MemberType.ADMIN)
+	@UseGuards(RolesGuard)
+	@Mutation((returns) => Product)
+	public async updateProductByAdmin(@Args('input') input: ProductUpdate): Promise<Product> {
+		console.log('Query updateProductByAdmin');
+		return await this.productService.updateProductByAdmin(input);
+	}
+
+	@Roles(MemberType.ADMIN)
+	@UseGuards(RolesGuard)
+	@Mutation((returns) => Product)
+	public async removeProductByAdmin(@Args('productId') input: string): Promise<Product> {
+		console.log('Query removeProductByAdmin');
+		const productId = shapeIntoMongoObjectId(input);
+		return await this.productService.removeProductByAdmin(productId);
 	}
 }
