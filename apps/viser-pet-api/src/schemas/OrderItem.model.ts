@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 
-const orderItemSchema = new Schema(
+const OrderItemSchema = new Schema(
 	{
 		itemQuantity: {
 			type: Number,
@@ -22,7 +22,7 @@ const orderItemSchema = new Schema(
 			ref: 'Product',
 		},
 	},
-	{ timestamps: true, collection: 'orderItems' },
+	{ timestamps: true, collection: 'OrderItems' },
 );
 
-export default mongoose.model('OrderItem', orderItemSchema);
+export default OrderItemSchema;
