@@ -25,9 +25,12 @@ export class BlogPostResolver {
 
 	@UseGuards(WithoutGuard)
 	@Query(() => BlogPost)
-	public async getBlogPost(@Args('articleId') input: string, @AuthMember('_id') memberId: ObjectId): Promise<BlogPost> {
+	public async getBlogPost(
+		@Args('blogPostId') input: string,
+		@AuthMember('_id') memberId: ObjectId,
+	): Promise<BlogPost> {
 		console.log('Query: getBlogPost');
-		const articleId = shapeIntoMongoObjectId(input);
-		return await this.blogPostService.getBlogPost(memberId, articleId);
+		const blogPostId = shapeIntoMongoObjectId(input);
+		return await this.blogPostService.getBlogPost(memberId, blogPostId);
 	}
 }

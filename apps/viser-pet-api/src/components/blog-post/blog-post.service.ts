@@ -39,29 +39,25 @@ export class BlogPostService {
 		}
 	}
 
-	public async getBlogPost(memberId: ObjectId, articleId: ObjectId): Promise<BlogPost> {
+	public async getBlogPost(memberId: ObjectId, blogPostId: ObjectId): Promise<BlogPost> {
 		const search: T = {
-			_id: articleId,
-			articleStatus: BlogPostStatus.ACTIVE,
+			_id: blogPostId,
+			blogPostStatus: BlogPostStatus.ACTIVE,
 		};
-
 		const targetBlogPost: BlogPost = await this.blogPostModel.findOne(search).lean().exec();
 		if (!targetBlogPost) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
-
 		if (memberId) {
-			const viewInput = { memberId: memberId, viewRefId: articleId, viewGroup: ViewGroup.BLOGPOST };
+			const viewInput = { memberId: memberId, viewRefId: blogPostId, viewGroup: ViewGroup.BLOGPOST };
 			const newView = await this.viewService.recordView(viewInput);
 			if (newView) {
-				await this.blogPostStatsEditor({ _id: articleId, targetKey: 'blogPostViews', modifier: 1 });
+				await this.blogPostStatsEditor({ _id: blogPostId, targetKey: 'blogPostViews', modifier: 1 });
 				targetBlogPost.blogPostViews++;
 			}
-
 			//meLiked
 
-			const likeInput = { memberId: memberId, likeRefId: articleId, likeGroup: LikeGroup.BLOGPOST };
+			const likeInput = { memberId: memberId, likeRefId: blogPostId, likeGroup: LikeGroup.BLOGPOST };
 			targetBlogPost.meLiked = await this.likeService.checkLikeExistence(likeInput);
 		}
-
 		targetBlogPost.memberData = await this.memberService.getMember(null, targetBlogPost.memberId);
 		return targetBlogPost;
 	}

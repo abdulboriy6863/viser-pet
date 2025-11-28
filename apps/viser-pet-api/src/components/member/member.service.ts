@@ -84,12 +84,11 @@ export class MemberService {
 		const search: T = {
 			_id: targetId,
 			memberStatus: {
-				$in: [MemberStatus.ACTIVE, MemberStatus.BLOCK],
+				$in: [MemberStatus.ACTIVE, MemberStatus.BLOCK], //
 			},
 		};
 		const targetMember = await this.memberModel.findOne(search).lean().exec();
 		if (!targetMember) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
-
 		if (memberId) {
 			// record view
 			const viewInput = { memberId: memberId, viewRefId: targetId, viewGroup: ViewGroup.MEMBER };
