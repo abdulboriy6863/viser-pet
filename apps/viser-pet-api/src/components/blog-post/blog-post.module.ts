@@ -22,5 +22,6 @@ import { LikeModule } from '../like/like.module';
 		LikeModule,
 	],
 	providers: [BlogPostResolver, BlogPostService],
+	exports: [BlogPostService],
 })
 export class BlogPostModule {}
