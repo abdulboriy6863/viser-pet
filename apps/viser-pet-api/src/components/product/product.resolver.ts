@@ -1,11 +1,10 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { ProductService } from './product.service';
-import { Roles } from '../decorators/roles.decorator';
+import { Roles } from '../auth/decorators/roles.decorator';
 import { UseGuards } from '@nestjs/common';
 import { MemberType } from '../../libs/enums/member.enum';
-import { RolesGuard } from '../guards/roles.guard';
 import { Product, Products } from '../../libs/dto/product/product';
-import { AuthMember } from '../decorators/authMember.decorator';
+import { AuthMember } from '../auth/decorators/authMember.decorator';
 import {
 	AgentProductsInquiry,
 	AllProductsInquiry,
@@ -14,10 +13,11 @@ import {
 	ProductsInquiry,
 } from '../../libs/dto/product/product.input';
 import { ObjectId } from 'mongoose';
-import { WithoutGuard } from '../guards/without.guard';
 import { shapeIntoMongoObjectId } from '../../libs/config';
 import { ProductUpdate } from '../../libs/dto/product/product.update';
-import { AuthGuard } from '../guards/auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { WithoutGuard } from '../auth/guards/without.guard';
+import { AuthGuard } from '../auth/guards/auth.guard';
 
 @Resolver()
 export class ProductResolver {

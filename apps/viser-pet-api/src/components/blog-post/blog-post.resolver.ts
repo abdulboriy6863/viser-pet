@@ -1,17 +1,17 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { BlogPostService } from './blog-post.service';
 import { UseGuards } from '@nestjs/common';
-import { AuthGuard } from '../guards/auth.guard';
 import { BlogPost, BlogPosts } from '../../libs/dto/blog-post/blog-post';
 import { AllBlogPostsInquiry, BlogPostInput, BlogPostsInquiry } from '../../libs/dto/blog-post/blog-post.input';
-import { AuthMember } from '../decorators/authMember.decorator';
+import { AuthMember } from '../auth/decorators/authMember.decorator';
 import { ObjectId } from 'mongoose';
-import { WithoutGuard } from '../guards/without.guard';
 import { shapeIntoMongoObjectId } from '../../libs/config';
 import { BlogPostUpdate } from '../../libs/dto/blog-post/blog-post.update';
-import { Roles } from '../decorators/roles.decorator';
+import { Roles } from '../auth/decorators/roles.decorator';
 import { MemberType } from '../../libs/enums/member.enum';
-import { RolesGuard } from '../guards/roles.guard';
+import { AuthGuard } from '../auth/guards/auth.guard';
+import { WithoutGuard } from '../auth/guards/without.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
 
 @Resolver()
 export class BlogPostResolver {

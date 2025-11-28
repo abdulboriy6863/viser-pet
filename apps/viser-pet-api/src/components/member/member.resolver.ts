@@ -3,19 +3,19 @@ import { MemberService } from './member.service';
 import { Member, Members } from '../../libs/dto/member/member';
 import { AgentsInquiry, LoginInput, MemberInput, MembersInquiry } from '../../libs/dto/member/member.input';
 import { InternalServerErrorException, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '../guards/auth.guard';
-import { AuthMember } from '../decorators/authMember.decorator';
-import { Roles } from '../decorators/roles.decorator';
+import { AuthMember } from '../auth/decorators/authMember.decorator';
+import { Roles } from '../auth/decorators/roles.decorator';
 import { MemberStatus, MemberType } from '../../libs/enums/member.enum';
 import { MemberUpdate } from '../../libs/dto/member/member.update';
 import { ObjectId } from 'mongoose';
 import { T } from '../../libs/types/common';
 import { Message } from '../../libs/enums/common.enum';
-import { WithoutGuard } from '../guards/without.guard';
 import { getSerialForImage, shapeIntoMongoObjectId, validMimeTypes } from '../../libs/config';
-import { RolesGuard } from '../guards/roles.guard';
 import { GraphQLUpload, FileUpload } from 'graphql-upload';
 import { createWriteStream } from 'fs';
+import { AuthGuard } from '../auth/guards/auth.guard';
+import { WithoutGuard } from '../auth/guards/without.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
 
 @Resolver()
 export class MemberResolver {
