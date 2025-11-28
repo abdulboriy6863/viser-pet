@@ -178,6 +178,27 @@ export class BlogPostService {
 		return result[0];
 	}
 
+	public async updateBlogPostByAdmin(input: BlogPostUpdate): Promise<BlogPost> {
+		const { _id, blogPostStatus } = input;
+
+		const result = await this.blogPostModel
+			.findOneAndUpdate({ _id: _id, blogPostStatus: BlogPostStatus.ACTIVE }, input, {
+				new: true,
+			})
+			.exec();
+		if (!result) throw new InternalServerErrorException(Message.UPDATE_FAILED);
+
+		if (blogPostStatus === BlogPostStatus.DELETE) {
+			await this.memberService.memberStatsEditor({
+				_id: result.memberId,
+				targetKey: 'memberArticles',
+				modifier: -1,
+			});
+		}
+
+		return result;
+	}
+
 	public async blogPostStatsEditor(input: StatisticModifier): Promise<BlogPost> {
 		const { _id, targetKey, modifier } = input;
 		return await this.blogPostModel

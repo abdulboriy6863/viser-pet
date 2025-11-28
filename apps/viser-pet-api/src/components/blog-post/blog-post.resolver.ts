@@ -82,4 +82,16 @@ export class BlogPostResolver {
 
 		return await this.blogPostService.getAllBlogPostsByAdmin(input);
 	}
+
+	@Roles(MemberType.ADMIN)
+	@UseGuards(RolesGuard)
+	@Mutation(() => BlogPost)
+	public async updateBlogPostByAdmin(
+		@Args('input') input: BlogPostUpdate,
+		@AuthMember('_id') memberId: ObjectId,
+	): Promise<BlogPost> {
+		console.log('Mutation: updateBlogPostByAdmin');
+		input._id = shapeIntoMongoObjectId(input._id);
+		return await this.blogPostService.updateBlogPostByAdmin(input);
+	}
 }
