@@ -2,8 +2,8 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { BlogPostService } from './blog-post.service';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../guards/auth.guard';
-import { BlogPost } from '../../libs/dto/blog-post/blog-post';
-import { BlogPostInput } from '../../libs/dto/blog-post/blog-post.input';
+import { BlogPost, BlogPosts } from '../../libs/dto/blog-post/blog-post';
+import { BlogPostInput, BlogPostsInquiry } from '../../libs/dto/blog-post/blog-post.input';
 import { AuthMember } from '../decorators/authMember.decorator';
 import { ObjectId } from 'mongoose';
 import { WithoutGuard } from '../guards/without.guard';
@@ -44,5 +44,15 @@ export class BlogPostResolver {
 		console.log('Mutation: updateBlogPost');
 		input._id = shapeIntoMongoObjectId(input._id);
 		return await this.blogPostService.updateBlogPost(memberId, input);
+	}
+
+	@UseGuards(WithoutGuard)
+	@Query(() => BlogPosts)
+	public async getBlogPosts(
+		@Args('input') input: BlogPostsInquiry,
+		@AuthMember('_id') memberId: ObjectId,
+	): Promise<BlogPosts> {
+		console.log('Query: getBlogPosts');
+		return await this.blogPostService.getBlogPosts(memberId, input);
 	}
 }

@@ -1,17 +1,18 @@
 import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
-import { BlogPost } from '../../libs/dto/blog-post/blog-post';
+import { BlogPost, BlogPosts } from '../../libs/dto/blog-post/blog-post';
 import { MemberService } from '../member/member.service';
 import { ViewService } from '../view/view.service';
 import { LikeService } from '../like/like.service';
-import { BlogPostInput } from '../../libs/dto/blog-post/blog-post.input';
-import { Message } from '../../libs/enums/common.enum';
+import { BlogPostInput, BlogPostsInquiry } from '../../libs/dto/blog-post/blog-post.input';
+import { Direction, Message } from '../../libs/enums/common.enum';
 import { BlogPostStatus } from '../../libs/enums/blog-post.enum';
 import { ViewGroup } from '../../libs/enums/view.enum';
 import { LikeGroup } from '../../libs/enums/like.enum';
 import { StatisticModifier, T } from '../../libs/types/common';
 import { BlogPostUpdate } from '../../libs/dto/blog-post/blog-post.update';
+import { lookupAuthMemberLiked, lookupMember, shapeIntoMongoObjectId } from '../../libs/config';
 
 @Injectable()
 export class BlogPostService {
@@ -83,6 +84,41 @@ export class BlogPostService {
 		}
 
 		return result;
+	}
+
+	public async getBlogPosts(memberId: ObjectId, input: BlogPostsInquiry): Promise<BlogPosts> {
+		const { blogPostCategory, text } = input.search;
+		const match: T = { blogPostStatus: BlogPostStatus.ACTIVE };
+		const sort: T = { [input?.sort ?? 'createdAt']: input?.direction ?? Direction.DESC };
+
+		if (blogPostCategory) match.blogPostCategory = blogPostCategory;
+		if (text) match.blogPostTitle = { $regex: new RegExp(text, 'i') };
+		if (input.search?.memberId) {
+			match.memberId = shapeIntoMongoObjectId(input.search.memberId);
+		}
+		console.log('match:', match);
+
+		const result = await this.blogPostModel
+			.aggregate([
+				{ $match: match },
+				{ $sort: sort },
+				{
+					$facet: {
+						list: [
+							{ $skip: (input.page - 1) * input.limit },
+							{ $limit: input.limit },
+
+							lookupAuthMemberLiked(memberId),
+							lookupMember,
+							{ $unwind: '$memberData' },
+						],
+						metaCounter: [{ $count: 'total' }],
+					},
+				},
+			])
+			.exec();
+		if (!result.length) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
+		return result[0];
 	}
 
 	public async blogPostStatsEditor(input: StatisticModifier): Promise<BlogPost> {
