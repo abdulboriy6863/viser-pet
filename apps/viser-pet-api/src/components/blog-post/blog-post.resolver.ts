@@ -55,4 +55,15 @@ export class BlogPostResolver {
 		console.log('Query: getBlogPosts');
 		return await this.blogPostService.getBlogPosts(memberId, input);
 	}
+
+	@UseGuards(AuthGuard)
+	@Mutation(() => BlogPost)
+	public async likeTargetBlogPost(
+		@Args('blogPostId') input: string,
+		@AuthMember('_id') memberId: ObjectId,
+	): Promise<BlogPost> {
+		console.log('Mutation: likeTargetBlogPost');
+		const likeRefId = shapeIntoMongoObjectId(input);
+		return await this.blogPostService.likeTargetBlogPost(memberId, likeRefId);
+	}
 }

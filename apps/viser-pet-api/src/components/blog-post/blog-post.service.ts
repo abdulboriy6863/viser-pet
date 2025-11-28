@@ -13,6 +13,7 @@ import { LikeGroup } from '../../libs/enums/like.enum';
 import { StatisticModifier, T } from '../../libs/types/common';
 import { BlogPostUpdate } from '../../libs/dto/blog-post/blog-post.update';
 import { lookupAuthMemberLiked, lookupMember, shapeIntoMongoObjectId } from '../../libs/config';
+import { LikeInput } from '../../libs/dto/like/like.input';
 
 @Injectable()
 export class BlogPostService {
@@ -119,6 +120,30 @@ export class BlogPostService {
 			.exec();
 		if (!result.length) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
 		return result[0];
+	}
+
+	public async likeTargetBlogPost(memberId: ObjectId, likeRefId: ObjectId): Promise<BlogPost> {
+		const target: BlogPost = await this.blogPostModel
+			.findOne({ _id: likeRefId, blogPostStatus: BlogPostStatus.ACTIVE })
+			.exec();
+		if (!target) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
+
+		const input: LikeInput = {
+			memberId: memberId,
+			likeRefId: likeRefId,
+			likeGroup: LikeGroup.BLOGPOST,
+		};
+
+		//LIKE TOGGLE via like modules
+		const modifier: number = await this.likeService.toggleLike(input);
+		const result = await this.blogPostStatsEditor({
+			_id: likeRefId,
+			targetKey: 'blogPostLikes',
+			modifier: modifier,
+		});
+
+		if (!result) throw new InternalServerErrorException(Message.SOMETHING_WENT_WRONG);
+		return result;
 	}
 
 	public async blogPostStatsEditor(input: StatisticModifier): Promise<BlogPost> {
