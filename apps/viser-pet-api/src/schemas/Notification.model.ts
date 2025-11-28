@@ -47,9 +47,9 @@ const NotificationSchema = new Schema(
 			ref: 'Product',
 		},
 
-		articleId: {
+		blogPostId: {
 			type: Schema.Types.ObjectId,
-			ref: 'BoardArticle',
+			ref: 'BlogPost',
 		},
 	},
 	{ timestamps: true, collection: 'notifications' },

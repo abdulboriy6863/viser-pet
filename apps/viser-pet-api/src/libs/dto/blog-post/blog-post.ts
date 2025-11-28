@@ -10,10 +10,10 @@ export class BlogPost {
 	_id: ObjectId;
 
 	@Field(() => BlogPostCategory)
-	articleCategory: BlogPostCategory;
+	blogPostCategory: BlogPostCategory;
 
 	@Field(() => BlogPostStatus)
-	articleStatus: BlogPostStatus;
+	blogPostStatus: BlogPostStatus;
 
 	@Field(() => String)
 	blogPostTitle: string;

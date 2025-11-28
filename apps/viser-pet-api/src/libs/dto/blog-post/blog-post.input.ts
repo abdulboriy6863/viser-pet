@@ -9,7 +9,7 @@ import { availableBlogPostSorts } from '../../config';
 export class BlogPostInput {
 	@IsNotEmpty()
 	@Field(() => BlogPostCategory)
-	articleCategory: BlogPostCategory;
+	blogPostCategory: BlogPostCategory;
 
 	@IsNotEmpty()
 	@Length(3, 50)
@@ -32,7 +32,7 @@ export class BlogPostInput {
 class BAISearch {
 	@IsOptional()
 	@Field(() => BlogPostCategory, { nullable: true })
-	articleCategory?: BlogPostCategory;
+	blogPostCategory?: BlogPostCategory;
 
 	@IsOptional()
 	@Field(() => String, { nullable: true })
@@ -44,7 +44,7 @@ class BAISearch {
 }
 
 @InputType()
-export class BoardArticlesInquiry {
+export class BlogPostsInquiry {
 	@IsNotEmpty()
 	@Min(1)
 	@Field(() => Int)
@@ -73,11 +73,11 @@ export class BoardArticlesInquiry {
 class ABAISearch {
 	@IsOptional()
 	@Field(() => BlogPostStatus, { nullable: true })
-	articleStatus?: BlogPostStatus;
+	blogPostStatus?: BlogPostStatus;
 
 	@IsOptional()
 	@Field(() => BlogPostCategory, { nullable: true })
-	articleCategory?: BlogPostCategory;
+	blogPostCategory?: BlogPostCategory;
 }
 
 @InputType()

@@ -7,7 +7,7 @@ export enum BlogPostCategory {
 	HUMOR = 'HUMOR',
 }
 registerEnumType(BlogPostCategory, {
-	name: 'BoardArticleCategory',
+	name: 'BlogPostCategory',
 });
 
 export enum BlogPostStatus {
@@ -15,5 +15,5 @@ export enum BlogPostStatus {
 	DELETE = 'DELETE',
 }
 registerEnumType(BlogPostStatus, {
-	name: 'BoardArticleStatus',
+	name: 'BlogPostStatus',
 });

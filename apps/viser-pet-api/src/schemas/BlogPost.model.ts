@@ -3,13 +3,13 @@ import { BlogPostCategory, BlogPostStatus } from '../libs/enums/blog-post.enum';
 
 const BlogPostSchema = new Schema(
 	{
-		articleCategory: {
+		blogPostCategory: {
 			type: String,
 			enum: BlogPostCategory,
 			required: true,
 		},
 
-		articleStatus: {
+		blogPostStatus: {
 			type: String,
 			enum: BlogPostStatus,
 			default: BlogPostStatus.ACTIVE,
@@ -30,6 +30,11 @@ const BlogPostSchema = new Schema(
 		},
 
 		blogPostLikes: {
+			type: Number,
+			default: 0,
+		},
+
+		blogPostRank: {
 			type: Number,
 			default: 0,
 		},

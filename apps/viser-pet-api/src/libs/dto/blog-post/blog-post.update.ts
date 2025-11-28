@@ -11,7 +11,7 @@ export class BlogPostUpdate {
 
 	@IsOptional()
 	@Field(() => BlogPostStatus, { nullable: true })
-	articleStatus?: BlogPostStatus;
+	blogPostStatus?: BlogPostStatus;
 
 	@IsOptional()
 	@Length(3, 50)
