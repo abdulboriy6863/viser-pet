@@ -11,6 +11,7 @@ import { BlogPostStatus } from '../../libs/enums/blog-post.enum';
 import { ViewGroup } from '../../libs/enums/view.enum';
 import { LikeGroup } from '../../libs/enums/like.enum';
 import { StatisticModifier, T } from '../../libs/types/common';
+import { BlogPostUpdate } from '../../libs/dto/blog-post/blog-post.update';
 
 @Injectable()
 export class BlogPostService {
@@ -60,6 +61,28 @@ export class BlogPostService {
 		}
 		targetBlogPost.memberData = await this.memberService.getMember(null, targetBlogPost.memberId);
 		return targetBlogPost;
+	}
+
+	public async updateBlogPost(memberId: ObjectId, input: BlogPostUpdate): Promise<BlogPost> {
+		const { _id, blogPostStatus } = input;
+
+		const result = await this.blogPostModel
+			.findOneAndUpdate({ _id: _id, memberId: memberId, blogPostStatus: BlogPostStatus.ACTIVE }, input, {
+				new: true,
+			})
+			.exec();
+
+		if (!result) throw new InternalServerErrorException(Message.UPDATE_FAILED);
+
+		if (blogPostStatus === BlogPostStatus.DELETE) {
+			await this.memberService.memberStatsEditor({
+				_id: memberId,
+				targetKey: 'memberBlogPosts',
+				modifier: -1,
+			});
+		}
+
+		return result;
 	}
 
 	public async blogPostStatsEditor(input: StatisticModifier): Promise<BlogPost> {

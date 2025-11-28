@@ -8,6 +8,7 @@ import { AuthMember } from '../decorators/authMember.decorator';
 import { ObjectId } from 'mongoose';
 import { WithoutGuard } from '../guards/without.guard';
 import { shapeIntoMongoObjectId } from '../../libs/config';
+import { BlogPostUpdate } from '../../libs/dto/blog-post/blog-post.update';
 
 @Resolver()
 export class BlogPostResolver {
@@ -32,5 +33,16 @@ export class BlogPostResolver {
 		console.log('Query: getBlogPost');
 		const blogPostId = shapeIntoMongoObjectId(input);
 		return await this.blogPostService.getBlogPost(memberId, blogPostId);
+	}
+
+	@UseGuards(AuthGuard)
+	@Mutation(() => BlogPost)
+	public async updateBlogPost(
+		@Args('input') input: BlogPostUpdate,
+		@AuthMember('_id') memberId: ObjectId,
+	): Promise<BlogPost> {
+		console.log('Mutation: updateBlogPost');
+		input._id = shapeIntoMongoObjectId(input._id);
+		return await this.blogPostService.updateBlogPost(memberId, input);
 	}
 }
