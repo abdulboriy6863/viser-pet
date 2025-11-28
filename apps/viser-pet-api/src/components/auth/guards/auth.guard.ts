@@ -1,6 +1,6 @@
 import { BadRequestException, CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Message } from 'apps/viser-pet-api/src/libs/enums/common.enum';
-import { AuthService } from '../auth/auth.service';
+import { AuthService } from '../auth.service';
 
 @Injectable() // guardtimizni injectable decoretr orqali boyitib oldik
 export class AuthGuard implements CanActivate {

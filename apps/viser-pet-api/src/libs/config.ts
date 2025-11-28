@@ -74,6 +74,49 @@ export const lookupAuthMemberLiked = (memberId: T, targetRefId: string = '$_id')
 	};
 };
 
+interface lookupAuthMemberFollowed {
+	followerId: T;
+	followingId: string;
+}
+
+export const lookupAuthMemberFollowed = (input: lookupAuthMemberFollowed) => {
+	const { followerId, followingId } = input;
+	//idRefId mavjud bolmasa shu qiymatni oladi
+	return {
+		$lookup: {
+			//localvariable
+			from: 'follows', //likees collectionda izledi
+			let: {
+				//likes ni ichiga kirib shuni ichidan qidirishini aytyappiz (search)
+				localFollowerId: followerId, //"$_id" bu shunde degani
+				localFollowingId: followingId,
+				localMyFavorite: true,
+			},
+			//pipeline
+			pipeline: [
+				{
+					$match: {
+						$expr: {
+							//aynan nimalarni solishtirishimizni belgilaypamiz
+							$and: [{ $eq: ['$followerId', '$$localFollowerId'] }, { $eq: ['$followingId', '$$localFollowingId'] }], //ikkalasin teng holatini izla
+							//memberId ni localLikeRefId ga teng bolgan holatin izla
+						},
+					},
+				},
+				{
+					$project: {
+						_id: 0,
+						followerId: 1,
+						followingId: 1,
+						myFollowing: '$$localMyFavorite',
+					},
+				},
+			],
+			as: 'meFollowed',
+		},
+	};
+};
+
 export const lookupMember = {
 	$lookup: {
 		from: 'members',
