@@ -3,12 +3,15 @@ import { BlogPostService } from './blog-post.service';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../guards/auth.guard';
 import { BlogPost, BlogPosts } from '../../libs/dto/blog-post/blog-post';
-import { BlogPostInput, BlogPostsInquiry } from '../../libs/dto/blog-post/blog-post.input';
+import { AllBlogPostsInquiry, BlogPostInput, BlogPostsInquiry } from '../../libs/dto/blog-post/blog-post.input';
 import { AuthMember } from '../decorators/authMember.decorator';
 import { ObjectId } from 'mongoose';
 import { WithoutGuard } from '../guards/without.guard';
 import { shapeIntoMongoObjectId } from '../../libs/config';
 import { BlogPostUpdate } from '../../libs/dto/blog-post/blog-post.update';
+import { Roles } from '../decorators/roles.decorator';
+import { MemberType } from '../../libs/enums/member.enum';
+import { RolesGuard } from '../guards/roles.guard';
 
 @Resolver()
 export class BlogPostResolver {
@@ -65,5 +68,18 @@ export class BlogPostResolver {
 		console.log('Mutation: likeTargetBlogPost');
 		const likeRefId = shapeIntoMongoObjectId(input);
 		return await this.blogPostService.likeTargetBlogPost(memberId, likeRefId);
+	}
+
+	/* ADMIN */
+	@Roles(MemberType.ADMIN)
+	@UseGuards(RolesGuard)
+	@Query(() => BlogPosts)
+	public async getAllBlogPostsByAdmin(
+		@Args('input') input: AllBlogPostsInquiry,
+		@AuthMember('_id') memberId: ObjectId,
+	): Promise<BlogPosts> {
+		console.log('Query: getAllBlogPostsByAdmin');
+
+		return await this.blogPostService.getAllBlogPostsByAdmin(input);
 	}
 }

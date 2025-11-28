@@ -5,7 +5,7 @@ import { BlogPost, BlogPosts } from '../../libs/dto/blog-post/blog-post';
 import { MemberService } from '../member/member.service';
 import { ViewService } from '../view/view.service';
 import { LikeService } from '../like/like.service';
-import { BlogPostInput, BlogPostsInquiry } from '../../libs/dto/blog-post/blog-post.input';
+import { AllBlogPostsInquiry, BlogPostInput, BlogPostsInquiry } from '../../libs/dto/blog-post/blog-post.input';
 import { Direction, Message } from '../../libs/enums/common.enum';
 import { BlogPostStatus } from '../../libs/enums/blog-post.enum';
 import { ViewGroup } from '../../libs/enums/view.enum';
@@ -144,6 +144,38 @@ export class BlogPostService {
 
 		if (!result) throw new InternalServerErrorException(Message.SOMETHING_WENT_WRONG);
 		return result;
+	}
+
+	/* ADMIN */
+
+	public async getAllBlogPostsByAdmin(input: AllBlogPostsInquiry): Promise<BlogPosts> {
+		const { blogPostStatus, blogPostCategory } = input.search;
+		const match: T = {};
+		const sort: T = { [input?.sort ?? 'createdAt']: input?.direction ?? Direction.DESC };
+
+		if (blogPostStatus) match.blogPostStatus = blogPostStatus;
+		if (blogPostCategory) match.blogPostCategory = blogPostCategory;
+
+		const result = await this.blogPostModel
+			.aggregate([
+				{ $match: match },
+				{ $sort: sort },
+				{
+					$facet: {
+						list: [
+							{ $skip: (input.page - 1) * input.limit },
+							{ $limit: input.limit },
+							lookupMember,
+							{ $unwind: '$memberData' },
+						],
+						metaCounter: [{ $count: 'total' }],
+					},
+				},
+			])
+			.exec();
+		if (!result.length) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
+
+		return result[0];
 	}
 
 	public async blogPostStatsEditor(input: StatisticModifier): Promise<BlogPost> {
