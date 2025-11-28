@@ -199,6 +199,14 @@ export class BlogPostService {
 		return result;
 	}
 
+	public async removeBlogPostByAdmin(blogPostId: ObjectId): Promise<BlogPost> {
+		const search: T = { _id: blogPostId, blogPostStatus: BlogPostStatus.DELETE };
+		const result = await this.blogPostModel.findOneAndDelete(search).exec();
+		if (!result) throw new InternalServerErrorException(Message.REMOVE_FAILED);
+
+		return result;
+	}
+
 	public async blogPostStatsEditor(input: StatisticModifier): Promise<BlogPost> {
 		const { _id, targetKey, modifier } = input;
 		return await this.blogPostModel

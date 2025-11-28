@@ -94,4 +94,16 @@ export class BlogPostResolver {
 		input._id = shapeIntoMongoObjectId(input._id);
 		return await this.blogPostService.updateBlogPostByAdmin(input);
 	}
+
+	@Roles(MemberType.ADMIN)
+	@UseGuards(RolesGuard)
+	@Mutation(() => BlogPost)
+	public async removeBlogPostByAdmin(
+		@Args('blogPostId') input: string,
+		@AuthMember('_id') memberId: ObjectId,
+	): Promise<BlogPost> {
+		console.log('Mutation: removeBlogPostByAdmin');
+		const blogPostId = shapeIntoMongoObjectId(input);
+		return await this.blogPostService.removeBlogPostByAdmin(blogPostId);
+	}
 }
