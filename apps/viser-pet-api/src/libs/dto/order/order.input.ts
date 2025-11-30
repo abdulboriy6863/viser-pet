@@ -25,6 +25,12 @@ export class OrderItemInput {
 }
 
 @InputType()
+export class CreateOrderInput {
+	@Field(() => [OrderItemInput])
+	items: OrderItemInput[]; // Buyurtmadagi barcha mahsulotlar
+}
+
+@InputType()
 export class OrderInput {
 	@IsNotEmpty()
 	@Field(() => [OrderItemInput])
