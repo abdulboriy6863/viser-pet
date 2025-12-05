@@ -105,3 +105,15 @@ export class Members {
 	@Field(() => [TotalCounter], { nullable: true })
 	metaCounter: TotalCounter[];
 }
+
+@ObjectType()
+export class ExtendedRequest {
+	@Field(() => Member)
+	member: Member;
+
+	@Field(() => String, { nullable: true }) // masalan fayl nomi
+	fileName?: string;
+
+	@Field(() => [String], { nullable: true }) // bir nechta fayl nomi
+	fileNames?: string[];
+}

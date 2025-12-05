@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import { AuthService } from '../auth/auth.service';
@@ -9,6 +9,8 @@ import { Member } from '../../libs/dto/member/member';
 import { OrderItemInput } from '../../libs/dto/order/order.input';
 import { shapeIntoMongoObjectId } from '../../libs/config';
 import { Message } from '../../libs/enums/common.enum';
+import { OrderInquiry } from '../../libs/dto/order/order.inquiry';
+import { OrderStatus } from '../../libs/enums/order.enum';
 
 @Injectable()
 export class OrderService {
@@ -57,7 +59,7 @@ export class OrderService {
 			await this.productModel.findOneAndUpdate(
 				{ _id: item.productId },
 				{
-					$inc: { soldCount: item.itemQuantity || 1 },
+					$inc: { productSoldCount: item.itemQuantity || 1 },
 				},
 			);
 
@@ -67,5 +69,40 @@ export class OrderService {
 		console.log('promisedList::', promisedList);
 		const orderItemsState = await Promise.all(promisedList);
 		console.log('orderItemsState::', orderItemsState);
+	}
+
+	public async getMyOrder(member: Member, inquiry: OrderInquiry): Promise<Order[]> {
+		const memberid = shapeIntoMongoObjectId(member._id);
+		const matches = { memberId: memberid, orderStatus: OrderStatus.PAUSE };
+
+		const result = await this.orderModel
+			.aggregate([
+				{ $match: matches },
+				{ $sort: { updatedAt: -1 } },
+				{ $skip: (inquiry.page - 1) * inquiry.limit },
+				{ $limit: inquiry.limit },
+
+				{
+					$lookup: {
+						from: 'orderItems',
+						localField: '_id',
+						foreignField: 'orderId',
+						as: 'orderItems',
+					},
+				},
+
+				{
+					$lookup: {
+						from: 'products',
+						localField: 'orderItems.productId',
+						foreignField: '_id',
+						as: 'productData',
+					},
+				},
+			])
+			.exec();
+		if (!result) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
+		console.log('keldi::::::', result);
+		return result;
 	}
 }

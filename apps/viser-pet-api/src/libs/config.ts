@@ -161,3 +161,21 @@ export const lookupVisit = {
 		as: 'visitedProduct.memberData',
 	},
 };
+
+export const lookupOrderItems = {
+	$lookup: {
+		from: 'orderItems',
+		localField: '_id',
+		foreignField: 'orderId',
+		as: 'orderItems',
+	},
+};
+
+export const lookupProductData = {
+	$lookup: {
+		from: 'products',
+		localField: 'orderItems.productId',
+		foreignField: '_id',
+		as: 'productData',
+	},
+};
