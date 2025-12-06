@@ -8,6 +8,7 @@ import { OrderModule } from './order/order.module';
 import { CommentModule } from './comment/comment.module';
 import { ViewModule } from './view/view.module';
 import { BlogPostModule } from './blog-post/blog-post.module';
+import { SocketModule } from './socket/socket.module';
 
 @Module({
 	imports: [
@@ -20,6 +21,7 @@ import { BlogPostModule } from './blog-post/blog-post.module';
 		CommentModule,
 		ViewModule,
 		BlogPostModule,
+		SocketModule,
 	],
 	providers: [],
 })
