@@ -11,6 +11,7 @@ import { shapeIntoMongoObjectId } from '../../libs/config';
 import { Message } from '../../libs/enums/common.enum';
 import { OrderInquiry } from '../../libs/dto/order/order.inquiry';
 import { OrderStatus } from '../../libs/enums/order.enum';
+import { OrderUpdate } from '../../libs/dto/order/order.update';
 
 @Injectable()
 export class OrderService {
@@ -104,5 +105,20 @@ export class OrderService {
 		if (!result) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
 		console.log('keldi::::::', result);
 		return result;
+	}
+
+	public async updateOrder(input: OrderUpdate, member: Member): Promise<Order> {
+		const memberId = shapeIntoMongoObjectId(member._id),
+			orderId = shapeIntoMongoObjectId(input.orderId),
+			orderStatus = input.orderStatus;
+		const order = await this.orderModel.findOneAndUpdate(
+			{ memberId: memberId, _id: orderId },
+			{ orderStatus: orderStatus },
+			{ new: true },
+		);
+		if (!order) throw new BadRequestException(Message.ORDER_NOT_FOUND);
+
+		// Update order logic here
+		return order;
 	}
 }

@@ -8,6 +8,7 @@ import { CreateOrderInput } from '../../libs/dto/order/order.input';
 import { AuthMember } from '../auth/decorators/authMember.decorator';
 import { Member } from '../../libs/dto/member/member';
 import { OrderInquiry } from '../../libs/dto/order/order.inquiry';
+import { OrderUpdate } from '../../libs/dto/order/order.update';
 
 @Resolver()
 export class OrderResolver {
@@ -24,5 +25,11 @@ export class OrderResolver {
 	@Query(() => [Order]) // <-- bir nechta Order qaytishini bildiradi
 	getMyOrder(@Args('inquiry') inquiry: OrderInquiry, @AuthMember() authMember: Member): Promise<Order[]> {
 		return this.orderService.getMyOrder(authMember, inquiry);
+	}
+
+	@UseGuards(AuthGuard)
+	@Mutation(() => Order)
+	updateOrder(@Args('input') input: OrderUpdate, @AuthMember() authMember: Member): Promise<Order> {
+		return this.orderService.updateOrder(input, authMember);
 	}
 }
