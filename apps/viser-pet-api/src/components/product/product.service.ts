@@ -327,6 +327,7 @@ export class ProductService {
 			])
 			.exec();
 		if (!result) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
+		console.log('result:', result);
 
 		return result[0];
 	}

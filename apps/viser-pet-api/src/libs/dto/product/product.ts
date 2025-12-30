@@ -1,6 +1,6 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 import type { ObjectId } from 'mongoose';
-import { ProductCollection, ProductStatus } from '../../enums/product.enum';
+import { ProductCollection, ProductStatus, ProductVolume } from '../../enums/product.enum';
 import { Member, TotalCounter } from '../member/member';
 import { MeLiked } from '../like/like';
 
@@ -65,6 +65,9 @@ export class Product {
 
 	@Field(() => Date)
 	updatedAt: Date;
+
+	@Field(() => ProductVolume, { nullable: true })
+	productVolume?: ProductVolume;
 
 	/* from aggregation */
 

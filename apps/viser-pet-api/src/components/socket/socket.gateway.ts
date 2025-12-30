@@ -19,6 +19,11 @@ interface InfoPayload {
 	action: string;
 }
 
+interface PetStatsPayload {
+	event: 'petStats:krCities';
+	rows: { label: string; value: number }[];
+}
+
 @WebSocketGateway({ transports: ['websocket'], secure: false })
 export class SocketGateway implements OnGatewayInit {
 	private logger: Logger = new Logger('SocketEventsGateway');
@@ -65,6 +70,10 @@ export class SocketGateway implements OnGatewayInit {
 		//client message
 		//ulangan clientga message yuborish
 		client.send(JSON.stringify({ event: 'getMessages', list: this.messageList }));
+
+		// O'zim qoshgan mantiq
+		client.send(JSON.stringify({ event: 'getMessages', list: this.messageList }));
+		this.emitPetStats();
 	}
 
 	public async handleDisconnect(client: WebSocket) {
@@ -109,6 +118,25 @@ export class SocketGateway implements OnGatewayInit {
 		this.server.clients.forEach((client) => {
 			if (client.readyState === WebSocket.OPEN) {
 				client.send(JSON.stringify(message));
+			}
+		});
+	}
+
+	private emitPetStats() {
+		const payload: PetStatsPayload = {
+			event: 'petStats:krCities',
+			rows: [
+				{ label: 'Seoul', value: 210 },
+				{ label: 'Busan', value: 120 },
+				{ label: 'Incheon', value: 90 },
+				{ label: 'Daegu', value: 80 },
+				{ label: 'Others', value: 160 },
+			],
+		};
+
+		this.server.clients.forEach((client) => {
+			if (client.readyState === WebSocket.OPEN) {
+				client.send(JSON.stringify(payload));
 			}
 		});
 	}

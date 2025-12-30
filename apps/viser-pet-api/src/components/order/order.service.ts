@@ -12,6 +12,7 @@ import { Message } from '../../libs/enums/common.enum';
 import { OrderInquiry } from '../../libs/dto/order/order.inquiry';
 import { OrderStatus } from '../../libs/enums/order.enum';
 import { OrderUpdate } from '../../libs/dto/order/order.update';
+import { MemberService } from '../member/member.service';
 
 @Injectable()
 export class OrderService {
@@ -21,6 +22,7 @@ export class OrderService {
 		@InjectModel('Product') private readonly productModel: Model<Product>,
 		private authService: AuthService,
 		private likeService: LikeService,
+		private memberService: MemberService,
 	) {}
 
 	public async createOrder(member: Member, input: OrderItemInput[]): Promise<Order> {
@@ -117,6 +119,9 @@ export class OrderService {
 			{ new: true },
 		);
 		if (!order) throw new BadRequestException(Message.ORDER_NOT_FOUND);
+		if (orderStatus === OrderStatus.PROCESS) {
+			await this.memberService.addUserPoint(member, 1);
+		}
 
 		// Update order logic here
 		return order;

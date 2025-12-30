@@ -13,7 +13,7 @@ import { LikeService } from '../like/like.service';
 import { LikeGroup } from '../../libs/enums/like.enum';
 import { Follower, Following, MeFollowed } from '../../libs/dto/follow/follow';
 import { ViewService } from '../view/view.service';
-import { lookupAuthMemberLiked } from '../../libs/config';
+import { lookupAuthMemberLiked, shapeIntoMongoObjectId } from '../../libs/config';
 import { LikeInput } from '../../libs/dto/like/like.input';
 
 @Injectable()
@@ -182,6 +182,22 @@ export class MemberService {
 			.exec();
 		if (!result.length) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
 		return result[0];
+	}
+
+	public async addUserPoint(member: Member, point: number): Promise<Member> {
+		const memberId = shapeIntoMongoObjectId(member._id);
+
+		const result = await this.memberModel.findByIdAndUpdate(
+			{
+				_id: memberId,
+				memberType: MemberType.USER,
+				MemberStatus: MemberStatus.ACTIVE,
+			},
+			{ $inc: { memberPoints: point } },
+			{ new: true },
+		);
+
+		return result;
 	}
 
 	public async updateMemberByAdmin(input: MemberUpdate): Promise<Member> {
