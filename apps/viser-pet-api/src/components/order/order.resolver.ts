@@ -17,6 +17,7 @@ export class OrderResolver {
 	@UseGuards(AuthGuard)
 	@Mutation(() => Order)
 	createOrder(@Args('input') input: CreateOrderInput, @AuthMember() authMember: Member): Promise<Order> {
+		console.log('input:', input);
 		console.log('Mutation: createOrder');
 		return this.orderService.createOrder(authMember, input.items);
 	}

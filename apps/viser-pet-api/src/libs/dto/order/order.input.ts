@@ -22,12 +22,19 @@ export class OrderItemInput {
 	@IsOptional()
 	@Field(() => String, { nullable: true })
 	orderId?: ObjectId;
+
+	@IsNotEmpty()
+	@Field(() => String)
+	memberId: ObjectId;
 }
 
 @InputType()
 export class CreateOrderInput {
 	@Field(() => [OrderItemInput])
 	items: OrderItemInput[]; // Buyurtmadagi barcha mahsulotlar
+	@IsNotEmpty()
+	@Field(() => String)
+	memberId: ObjectId;
 }
 
 @InputType()

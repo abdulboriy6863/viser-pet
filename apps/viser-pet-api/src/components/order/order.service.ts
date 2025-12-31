@@ -31,7 +31,7 @@ export class OrderService {
 			return accumulator + item.itemPrice * item.itemQuantity;
 		}, 0);
 		const delivery = amount < 100 ? 5 : 0;
-		console.log('values:', amount, delivery);
+		// console.log('values:', amount, delivery);
 
 		try {
 			const newOrder: Order = await this.orderModel.create({
@@ -42,7 +42,7 @@ export class OrderService {
 			});
 
 			const orderId = newOrder._id;
-			console.log('orderId::', newOrder._id);
+			// console.log('orderId::', newOrder._id);
 			await this.recordOrderItem(orderId, input);
 			//TODO: create order items
 
@@ -105,7 +105,7 @@ export class OrderService {
 			])
 			.exec();
 		if (!result) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
-		console.log('keldi::::::', result);
+		// console.log('keldi::::::', result);
 		return result;
 	}
 
