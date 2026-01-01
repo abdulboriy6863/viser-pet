@@ -1,0 +1,39 @@
+services:
+  viser-pet-api:
+    container_name: viser-pet-api
+    restart: always
+    image: node:20.10.0
+    ports:
+      - 4020:3020
+    volumes:
+      - ./:/usr/src/viser-pet
+    working_dir: /usr/src/viser-pet
+
+    networks:
+      - monorepo-network
+
+    # FOR PRODUCTION
+    command: bash -c "npm install && npm run build && npm run start:prod"
+
+  viser-pet-batch:
+    container_name: viser-pet-batch
+    restart: unless-stopped
+    image: node:20.10.0
+    ports:
+      - 4021:3080
+    volumes:
+      - ./:/usr/src/viser-pet
+    working_dir: /usr/src/viser-pet
+
+    networks:
+      - monorepo-network
+
+    # FOR PRODUCTION
+    command: bash -c "npm install && npm run build && npm run start:prod:batch"
+
+networks:
+  monorepo-network:
+    driver: bridge
+# nestar-next:  localhost:4000 <=> container:3000
+# nestar-api:   localhost:4001 <=> container:3007
+# nestar-batch: localhost:4002 <=> container:3008

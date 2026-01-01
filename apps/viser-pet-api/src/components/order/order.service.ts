@@ -45,6 +45,7 @@ export class OrderService {
 			// console.log('orderId::', newOrder._id);
 			await this.recordOrderItem(orderId, input);
 			//TODO: create order items
+			console.log('newOrder=>:', newOrder);
 
 			return newOrder;
 		} catch (err) {
